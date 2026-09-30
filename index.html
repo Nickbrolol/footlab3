@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ka" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>footlab — Match Intelligence Beta</title>
+  <link rel="stylesheet" href="tailwind.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-screen antialiased">
+
+  <!-- Header -->
+  <header class="border-b border-surface-700 bg-surface-900/95 sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+      <a href="#" class="brand-mark">
+        <span class="brand-symbol"><i class="fa-solid fa-crosshairs"></i></span>
+        <span class="brand-name">foot<span>lab</span></span>
+        <span class="beta-badge">BETA</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-gray-400">
+        <a href="#matches" class="text-white">მატჩები</a>
+        <a href="#ticket" class="hover:text-white transition">ბილეთი</a>
+        <a href="#community" class="hover:text-white transition">ქომიუნითი</a>
+        <button onclick="openAccount()" class="profile-trigger"><span id="nav-avatar">NK</span><span id="nav-name">ჩემი პროფილი</span></button>
+        <button onclick="openAiChat()" class="flex items-center gap-2 text-xs font-bold bg-accent-emerald text-black px-3 py-1.5 rounded-md hover:bg-emerald-400 transition">
+          <i class="fa-solid fa-sparkles"></i> ჰკითხე AI-ს
+        </button>
+      </nav>
+      <button onclick="openAiChat()" class="md:hidden text-accent-emerald text-lg" aria-label="AI ჩატი">
+        <i class="fa-solid fa-sparkles"></i>
+      </button>
+      <button onclick="openAccount()" class="md:hidden profile-trigger" aria-label="პროფილი"><span id="mobile-avatar">NK</span></button>
+    </div>
+  </header>
+
+  <!-- Main Content Grid -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- Schedule Section (8 cols) -->
+    <main class="lg:col-span-8 space-y-6">
+      <section class="hero-panel rounded-xl p-6 sm:p-8">
+        <div class="max-w-xl">
+          <p class="eyebrow"><span class="live-dot"></span> FOOTBALL INTELLIGENCE <span class="hero-beta">BETA</span> • 18 SEPTEMBER 2026</p>
+          <h1 class="hero-title">მატჩის დღე,<br><span>უფრო ჭკვიანურად.</span></h1>
+          <p class="hero-copy">მონაცემებზე დაფუძნებული ანალიზი, ცოცხალი დისკუსია და შენი პირადი ფეხბურთის ასისტენტი ერთ სივრცეში.</p>
+          <button onclick="openAiChat()" class="hero-action"><i class="fa-solid fa-message"></i> ესაუბრე AI ანალიტიკოსს</button>
+        </div>
+        <div class="hero-mark" aria-hidden="true"><span>90</span><small>MIN</small></div>
+      </section>
+
+      <section id="stats-container" class="stats-grid" aria-label="სტატისტიკა">
+        <div class="stat-card"><span class="stat-label">დღევანდელი მატჩები</span><strong id="stat-matches">--</strong><span class="stat-note">განრიგში</span></div>
+        <div class="stat-card"><span class="stat-label">ლიგები</span><strong id="stat-leagues">--</strong><span class="stat-note">დღევანდელ დაფაზე</span></div>
+      </section>
+
+      <div class="section-heading"><div><span class="eyebrow">TODAY'S BOARD</span><h2>ყველა თამაში <span id="match-total">8</span></h2></div><button class="view-toggle active"><i class="fa-solid fa-list"></i> სია</button></div>
+
+      <div id="matches" class="panel rounded-xl overflow-hidden">
+        <div class="bg-surface-800 px-4 py-3 border-b border-surface-700 flex justify-between items-center">
+          <span class="font-bold text-xs text-white tracking-wide flex items-center gap-2">
+            <i class="fa-solid fa-trophy text-accent-amber text-xs"></i> მომავალი მატჩები
+          </span>
+          <div class="match-toolbar flex items-center gap-2">
+            <select id="league-filter" onchange="filterMatches()" class="filter-select">
+              <option value="all">ყველა ლიგა</option>
+              <option value="champions">Champions League</option>
+              <option value="premier">Premier League</option>
+            </select>
+            <select id="sort-filter" onchange="filterMatches()" class="filter-select" aria-label="მატჩების დალაგება">
+              <option value="time">დროის მიხედვით</option>
+              <option value="league">ლიგის მიხედვით</option>
+              <option value="odds">კოეფიციენტი</option>
+              <option value="risk">რისკის მიხედვით</option>
+            </select>
+            <span class="live-label"><span class="live-dot"></span> LIVE</span>
+          </div>
+        </div>
+        <div class="px-4 py-3 border-b border-surface-700/60">
+          <div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input id="match-search" oninput="filterMatches()" placeholder="მოძებნე გუნდი..." aria-label="მატჩის ძებნა"></div>
+        </div>
+        <div id="matches-container" class="divide-y divide-surface-700/60">
+          <!-- Loaded dynamically via app.js -->
+        </div>
+      </div>
+
+      <!-- Comments Section -->
+      <div id="community" class="panel rounded-xl p-5 space-y-4">
+        <h3 class="font-bold text-xs text-white uppercase tracking-wider">ქომიუნითის დისკუსია</h3>
+        <div class="flex gap-2">
+          <input type="text" id="comment-input" placeholder="დაწერე კომენტარი..." class="w-full bg-surface-900 border border-surface-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none">
+          <button onclick="postComment()" class="px-4 py-2 bg-accent-emerald text-black font-bold text-xs rounded-lg hover:bg-emerald-400 transition">გაგზავნა</button>
+        </div>
+        <div id="comments-container" class="space-y-3">
+          <!-- Loaded dynamically via app.js -->
+        </div>
+      </div>
+
+      <section class="reviews-section">
+        <div class="section-heading"><div><span class="eyebrow">TRUSTED BY FANS</span><h2>რას ამბობენ მოთამაშეები</h2></div><span class="review-score"><i class="fa-solid fa-star"></i> 4.9 / 5</span></div>
+        <div id="reviews-container" class="reviews-grid"></div>
+      </section>
+    </main>
+
+    <!-- Ticket Sidebar (4 cols) -->
+    <aside class="lg:col-span-4">
+      <div class="profile-card panel rounded-xl p-5 space-y-4">
+        <div class="profile-card-top"><div class="profile-avatar" id="card-avatar">NK</div><div><span class="verified-badge"><i class="fa-solid fa-circle-check"></i> VERIFIED FAN</span><h3 id="card-name">ნიკა კაპანაძე</h3><p id="card-team">რეალის გულშემატკივარი</p></div><button onclick="openAccount()" class="icon-button"><i class="fa-solid fa-pen"></i></button></div>
+        <div class="profile-stats"><div><strong>24</strong><span>ანალიზი</span></div><div><strong>78%</strong><span>სიზუსტე</span></div><div><strong>4.8</strong><span>რეიტინგი</span></div></div>
+        <button onclick="openAccount()" class="profile-button"><i class="fa-solid fa-user"></i> პროფილის გახსნა</button>
+      </div>
+      <div id="ticket" class="ticket-panel panel rounded-xl p-5 space-y-4 border-t-2 border-t-accent-emerald sticky top-20">
+        <div class="flex items-center justify-between border-b border-surface-700 pb-3">
+          <h3 class="font-extrabold text-xs text-white uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-ticket text-accent-emerald"></i> AI ექსპრეს-ბილეთი
+          </h3>
+          <span id="ticket-count" class="text-[10px] bg-surface-700 text-gray-300 px-2 py-0.5 rounded font-mono">0 თამაში</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="requestAiTicket('safe')" class="py-2 bg-surface-700 hover:bg-surface-600 text-white font-bold text-[11px] rounded-lg transition border border-surface-600">
+            🛡️ უსაფრთხო
+          </button>
+          <button onclick="requestAiTicket('risk')" class="py-2 bg-surface-700 hover:bg-surface-600 text-white font-bold text-[11px] rounded-lg transition border border-surface-600">
+            🔥 მაღალი კოეფ.
+          </button>
+        </div>
+
+        <div id="ticket-slip" class="space-y-2 py-2 min-h-[120px] flex flex-col justify-center">
+          <div id="empty-state" class="text-center text-gray-500 text-xs py-4">
+            დააჭირეთ მატჩთან «+ ბილეთში» ან აირჩიეთ AI ავტო-აწყობა
+          </div>
+        </div>
+
+        <div id="ticket-summary" class="hidden pt-3 border-t border-surface-700 space-y-2">
+          <div class="flex justify-between text-xs text-gray-400">
+            <span>ჯამური კოეფიციენტი:</span>
+            <span id="total-odds" class="font-extrabold text-accent-emerald text-sm">1.00</span>
+          </div>
+          <button onclick="copyTicket()" class="w-full py-2 bg-accent-emerald hover:bg-emerald-600 text-black font-bold text-xs rounded-lg transition">
+            <i class="fa-solid fa-copy"></i> ბილეთის კოპირება
+          </button>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <nav class="mobile-dock" aria-label="სწრაფი ნავიგაცია">
+    <a href="#matches"><i class="fa-solid fa-futbol"></i><span>მატჩები</span></a>
+    <a href="#ticket"><i class="fa-solid fa-ticket"></i><span>ბილეთები</span></a>
+  </nav>
+
+  <div id="account-modal" class="modal-backdrop hidden" onclick="closeAccount(event)">
+    <section class="account-modal" role="dialog" aria-modal="true" aria-labelledby="account-title" onclick="event.stopPropagation()">
+      <div class="ai-modal-head"><div><span class="ai-orb"><i class="fa-solid fa-user"></i></span><div><h2 id="account-title">შექმენი ანგარიში</h2><p>შეინახე პროფილი და შენი საყვარელი გუნდები</p></div></div><button onclick="closeAccount()" class="icon-button" aria-label="დახურვა"><i class="fa-solid fa-xmark"></i></button></div>
+      <form class="account-form" onsubmit="submitAuth(event)"><label id="account-name-field">სახელი<input id="account-name" required maxlength="24" placeholder="მაგ. ნიკა"></label><label>Email<input id="account-email" type="email" required placeholder="you@example.com"></label><label>პაროლი<input id="account-password" type="password" minlength="8" required placeholder="მინიმუმ 8 სიმბოლო"></label><label id="account-team-field">საყვარელი გუნდი<input id="account-team" maxlength="32" placeholder="მაგ. Real Madrid"></label><p id="auth-error" class="auth-error"></p><button class="profile-button" type="submit"><i class="fa-solid fa-user-plus"></i> <span id="auth-submit-label">რეგისტრაცია</span></button><button type="button" class="auth-switch" onclick="toggleAuthMode()" id="auth-switch">უკვე გაქვს ანგარიში? შესვლა</button></form>
+    </section>
+  </div>
+
+  <div id="ai-modal" class="modal-backdrop hidden" onclick="closeAiChat(event)">
+    <section class="ai-modal" role="dialog" aria-modal="true" aria-labelledby="ai-title" onclick="event.stopPropagation()">
+      <div class="ai-modal-head">
+        <div><span class="ai-orb"><i class="fa-solid fa-sparkles"></i></span><div><h2 id="ai-title">AI ანალიტიკოსი</h2><p><span class="live-dot"></span> პასუხობს მატჩების მონაცემებზე დაყრდნობით</p></div></div>
+        <button onclick="closeAiChat()" class="icon-button" aria-label="დახურვა"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="ai-messages" class="ai-messages"><div class="ai-message assistant">გამარჯობა! მკითხე ნებისმიერი მატჩის, რისკის ან სტრატეგიის შესახებ. პასუხს მონაცემებზე დაყრდნობით მოგიმზადებ.</div></div>
+      <div class="quick-prompts"><button onclick="usePrompt('რომელი მატჩია ყველაზე დაბალი რისკის?')">დაბალი რისკი</button><button onclick="usePrompt('შეადარე რეალი და სიტი')">რეალი vs სიტი</button><button onclick="usePrompt('ამიწყე დაბალრისკიანი ექსპრესი')">ექსპრესი</button></div>
+      <form class="ai-input" onsubmit="sendAiMessage(event)"><input id="ai-input" autocomplete="off" placeholder="დაუსვი კითხვა ქართულად..." aria-label="AI კითხვა"><button aria-label="გაგზავნა"><i class="fa-solid fa-arrow-up"></i></button></form>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

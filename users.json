@@ -1,0 +1,12 @@
+[
+  {
+    "id": "17dc6657-a249-46fd-93c5-4b1d75d8edbe",
+    "name": "footlab Admin",
+    "email": "admin@footlab.local",
+    "team": "",
+    "role": "admin",
+    "salt": "53645e51c30405dc7b95abc7873c0df7",
+    "hash": "d3d63296f7e0049ae3597d462330c35ebb417b11a66013bc4781aee47d376fd2312bf54dcf52b9c4385215f3e3c72232eba413a6c83dcaf729a14c60dfd9785b",
+    "createdAt": "2026-09-17T21:41:13.463Z"
+  }
+]
